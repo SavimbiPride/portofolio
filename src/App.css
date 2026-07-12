@@ -1,11 +1,34 @@
 @import "tailwindcss";
 
+body {
+  background-color: #E1E1DF; /* Warna Kertas Dasar */
+  color: #392F43; /* Warna Outline/Teks */
+  @apply bg-neo-black text-gray-300;
+  overflow-x: hidden;
+}
+
+.fpe-paper {
+  background-color: #FFFFFF;
+  border: 1px solid #392F43; /* Line hitam tipis */
+  box-shadow: 3px 3px 0px #8B9E9C; /* Efek bayangan kertas */
+}
+
+@font-face {
+  font-family: 'Barrio';
+  src: url('../assets/font/Barrio-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-neo-black: #070b14;
   --color-neo-card: #0d1526;
   
   --animate-rgb-glow: rgbGlow 3s linear infinite;
   --animate-rgb-text: rgbText 3s linear infinite;
+  --animate-rgb-stroke: rgbStroke 3s linear infinite;
+
+  --font-barrio: "Barrio", sans-serif;
 
   @keyframes rgbGlow {
     0%, 100% { 
@@ -27,12 +50,14 @@
     33% { color: #ff00ff; }
     66% { color: #39ff14; }
   }
+
+  @keyframes rgbStroke {
+    0%, 100% { stroke: #00ffff; filter: drop-shadow(0 0 8px #00ffff); }
+    33% { stroke: #ff00ff; filter: drop-shadow(0 0 8px #ff00ff); }
+    66% { stroke: #39ff14; filter: drop-shadow(0 0 8px #39ff14); }
+  }
 }
 
 html {
   scroll-behavior: smooth;
-}
-
-body {
-  @apply bg-neo-black text-gray-300;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import PortofolioSatu from "./page/PortofolioSatu";
 import PortofolioDua from "./page/PortofolioDua";
@@ -12,6 +12,8 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<PortofolioSatu />} />
         <Route path="/FPE_style" element={<PortofolioDua />} />
+        <Route path="/portofolio" element={<PortofolioSatu />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
