@@ -1,16 +1,27 @@
 @import "tailwindcss";
 
 body {
-  background-color: #E1E1DF; /* Warna Kertas Dasar */
-  color: #392F43; /* Warna Outline/Teks */
-  @apply bg-neo-black text-gray-300;
+  background-image: url('../assets/backgroundfpe.jpeg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  @apply text-[#392F43];
   overflow-x: hidden;
 }
 
-.fpe-paper {
-  background-color: #FFFFFF;
-  border: 1px solid #392F43; /* Line hitam tipis */
-  box-shadow: 3px 3px 0px #8B9E9C; /* Efek bayangan kertas */
+.paper-ripped {
+  background: rgba(255, 255, 255, 0.85); 
+  backdrop-filter: blur(4px);
+  clip-path: polygon(0% 0%, 100% 0%, 98% 95%, 95% 100%, 5% 98%, 0% 95%);
+  box-shadow: 4px 4px 0px rgba(139, 158, 156, 0.5);
+}
+
+.paper-crumpled {
+  background-image: url('../assets/crumpled-texture.png');
+  background-color: rgba(255, 255, 255, 0.8);
+  background-blend-mode: multiply;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(156, 163, 175, 0.5);
 }
 
 @font-face {

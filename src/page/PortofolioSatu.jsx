@@ -1,5 +1,3 @@
-import React from 'react';
-
 const BackgroundLines = () => {
   return (
     <svg className="fixed inset-0 w-full h-full opacity-25 pointer-events-none z-0" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
@@ -11,7 +9,55 @@ const BackgroundLines = () => {
   );
 };
 
-const Portfolio = () => {
+// 1. Tambahkan Objek Terjemahan
+const translations = {
+  id: {
+    introTag: "01. Perkenalan",
+    greeting: "Halo, Saya seorang",
+    role: "Web Developer.",
+    bio: "Saya memiliki ketertarikan mendalam dalam membangun aplikasi web modern dan responsif. Menggabungkan desain fungsional dengan arsitektur backend yang solid.",
+    education: "Pendidikan",
+    major: "Rekayasa Perangkat Lunak",
+    experience: "Pengalaman",
+    expTitle: "Magang Web Developer",
+    techStack: "Tech Stack",
+    projects: "Featured Projects",
+    project1Desc: "Landing page interaktif dengan navigasi sticky, side menu, dan integrasi antarmuka chatbot.",
+    project2Desc: "Pengembangan arsitektur backend, integrasi database MySQL, dan pembuatan RESTful API menggunakan Express.js.",
+    certificates: "Sertifikasi",
+    certProvider: "Penyelenggara XYZ",
+    year: "Tahun 2026",
+    verifyLink: "Verifikasi Link",
+    collaborate: "Mari Berkolaborasi",
+    contactDesc: "Tertarik untuk membangun sesuatu yang luar biasa? Jangan ragu untuk menghubungi saya melalui platform di bawah ini."
+  },
+  en: {
+    introTag: "01. Introduction",
+    greeting: "Hello, I am a",
+    role: "Web Developer.",
+    bio: "I have a deep passion for building modern and responsive web applications. Combining functional design with a solid backend architecture.",
+    education: "Education",
+    major: "Software Engineering",
+    experience: "Experience",
+    expTitle: "Web Developer Intern",
+    techStack: "Tech Stack",
+    projects: "Featured Projects",
+    project1Desc: "Interactive landing page featuring sticky navigation, side menu, and chatbot interface integration.",
+    project2Desc: "Backend architecture development, MySQL database integration, and RESTful API creation using Express.js.",
+    certificates: "Certifications",
+    certProvider: "XYZ Organizer",
+    year: "Year 2026",
+    verifyLink: "Verify Link",
+    collaborate: "Let's Collaborate",
+    contactDesc: "Interested in building something amazing? Feel free to reach out to me through the platforms below."
+  }
+};
+
+// 2. Terima prop lang di komponen utama (default ke 'id' jika kosong)
+const Portfolio = ({ lang = 'id' }) => {
+  // 3. Tentukan bahasa yang sedang aktif
+  const t = translations[lang] || translations.id;
+
   return (
     <div className="relative min-h-screen bg-neo-black text-gray-300 font-sans selection:bg-cyan-500 selection:text-white overflow-hidden">
       
@@ -24,24 +70,24 @@ const Portfolio = () => {
           
           <section id="about" className="flex flex-col md:flex-row gap-12 items-center">
             <div className="flex-1 space-y-6">
-              <h2 className="text-sm tracking-[0.3em] text-cyan-400 uppercase">01. Perkenalan</h2>
+              <h2 className="text-sm tracking-[0.3em] text-cyan-400 uppercase">{t.introTag}</h2>
               <h1 className="text-4xl md:text-6xl font-bold text-white">
-                Halo, Saya seorang <br />
-                <span className="animate-rgb-text">Web Developer.</span>
+                {t.greeting} <br />
+                <span className="animate-rgb-text">{t.role}</span>
               </h1>
               <p className="text-lg text-gray-400 leading-relaxed border-l-2 border-cyan-500 pl-4">
-                Saya memiliki ketertarikan mendalam dalam membangun aplikasi web modern dan responsif. Menggabungkan desain fungsional dengan arsitektur backend yang solid.
+                {t.bio}
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                 <div className="bg-neo-card p-5 rounded-lg border border-gray-800 hover:border-cyan-500 transition-colors">
-                  <h3 className="text-cyan-400 font-semibold mb-2">Pendidikan</h3>
+                  <h3 className="text-cyan-400 font-semibold mb-2">{t.education}</h3>
                   <p className="text-white">SMK PGRI 3</p>
-                  <p className="text-sm text-gray-500">Rekayasa Perangkat Lunak</p>
+                  <p className="text-sm text-gray-500">{t.major}</p>
                 </div>
                 <div className="bg-neo-card p-5 rounded-lg border border-gray-800 hover:border-cyan-500 transition-colors">
-                  <h3 className="text-cyan-400 font-semibold mb-2">Pengalaman</h3>
-                  <p className="text-white">Magang Web Developer</p>
+                  <h3 className="text-cyan-400 font-semibold mb-2">{t.experience}</h3>
+                  <p className="text-white">{t.expTitle}</p>
                   <p className="text-sm text-gray-500">2025 - 2026</p>
                 </div>
               </div>
@@ -50,7 +96,7 @@ const Portfolio = () => {
 
           <section id="skills" className="space-y-8">
             <h2 className="text-3xl font-bold text-white border-b border-gray-800 pb-4">
-              <span className="text-cyan-500 mr-2">/</span> Tech Stack
+              <span className="text-cyan-500 mr-2">/</span> {t.techStack}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
@@ -69,7 +115,7 @@ const Portfolio = () => {
 
           <section id="projects" className="space-y-8">
             <h2 className="text-3xl font-bold text-white border-b border-gray-800 pb-4">
-              <span className="text-cyan-500 mr-2">/</span> Featured Projects
+              <span className="text-cyan-500 mr-2">/</span> {t.projects}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
@@ -80,7 +126,7 @@ const Portfolio = () => {
                 </div>
                 <div className="p-6 space-y-4">
                   <h3 className="text-2xl font-bold text-white">FOCUS POINT EDUCATION</h3>
-                  <p className="text-gray-400 text-sm">Landing page interaktif dengan navigasi sticky, side menu, dan integrasi antarmuka chatbot.</p>
+                  <p className="text-gray-400 text-sm">{t.project1Desc}</p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 text-xs rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">React</span>
                     <span className="px-3 py-1 text-xs rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Tailwind CSS</span>
@@ -101,7 +147,7 @@ const Portfolio = () => {
                 </div>
                 <div className="p-6 space-y-4">
                   <h3 className="text-2xl font-bold text-white">IPOS Mobile App Backend</h3>
-                  <p className="text-gray-400 text-sm">Pengembangan arsitektur backend, integrasi database MySQL, dan pembuatan RESTful API menggunakan Express.js.</p>
+                  <p className="text-gray-400 text-sm">{t.project2Desc}</p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Node.js</span>
                     <span className="px-3 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Express.js</span>
@@ -121,26 +167,26 @@ const Portfolio = () => {
 
           <section id="certificates" className="space-y-8">
             <h2 className="text-3xl font-bold text-white border-b border-gray-800 pb-4">
-              <span className="text-cyan-500 mr-2">/</span> Sertifikasi
+              <span className="text-cyan-500 mr-2">/</span> {t.certificates}
             </h2>
             <div className="bg-neo-card p-6 rounded-xl border border-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-cyan-500 transition-colors">
               <div>
                 <h3 className="text-xl font-bold text-white">Fullstack Web Development</h3>
-                <p className="text-cyan-400">Penyelenggara XYZ</p>
+                <p className="text-cyan-400">{t.certProvider}</p>
               </div>
               <div className="text-right">
-                <p className="text-gray-500 text-sm mb-2">Tahun 2026</p>
+                <p className="text-gray-500 text-sm mb-2">{t.year}</p>
                 <a href="#" className="px-4 py-2 text-sm bg-transparent border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-500 hover:text-white transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:shadow-[0_0_15px_rgba(6,182,212,0.6)]">
-                  Verifikasi Link
+                  {t.verifyLink}
                 </a>
               </div>
             </div>
           </section>
 
           <section id="contact" className="py-12 border-t border-gray-800 text-center space-y-6">
-            <h2 className="text-2xl font-bold text-white">Mari Berkolaborasi</h2>
+            <h2 className="text-2xl font-bold text-white">{t.collaborate}</h2>
             <p className="text-gray-400 max-w-md mx-auto">
-              Tertarik untuk membangun sesuatu yang luar biasa? Jangan ragu untuk menghubungi saya melalui platform di bawah ini.
+              {t.contactDesc}
             </p>
             <div className="flex justify-center gap-6 pt-4">
               
