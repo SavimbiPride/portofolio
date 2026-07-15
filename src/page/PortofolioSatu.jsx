@@ -9,7 +9,6 @@ const BackgroundLines = () => {
   );
 };
 
-// 1. Tambahkan Objek Terjemahan
 const translations = {
   id: {
     introTag: "01. Perkenalan",
@@ -53,9 +52,7 @@ const translations = {
   }
 };
 
-// 2. Terima prop lang di komponen utama (default ke 'id' jika kosong)
 const Portfolio = ({ lang = 'id' }) => {
-  // 3. Tentukan bahasa yang sedang aktif
   const t = translations[lang] || translations.id;
 
   return (

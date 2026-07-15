@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body {
-  background-image: url('../assets/backgroundfpe.jpeg');
+  background-image: url('./assets/backgroundfpe.jpeg');
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
@@ -9,24 +9,20 @@ body {
   overflow-x: hidden;
 }
 
-.paper-ripped {
-  background: rgba(255, 255, 255, 0.85); 
-  backdrop-filter: blur(4px);
-  clip-path: polygon(0% 0%, 100% 0%, 98% 95%, 95% 100%, 5% 98%, 0% 95%);
-  box-shadow: 4px 4px 0px rgba(139, 158, 156, 0.5);
-}
-
 .paper-crumpled {
-  background-image: url('../assets/crumpled-texture.png');
-  background-color: rgba(255, 255, 255, 0.8);
+  background-image: url('/assets/crumpledtexture.jpeg');
+  background-color: rgba(255, 255, 255, 0.85);
   background-blend-mode: multiply;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(156, 163, 175, 0.5);
+}
+
+.paper-ripped {
+  clip-path: polygon(1% 0, 100% 2%, 98% 100%, 0 98%, 2% 50%);
 }
 
 @font-face {
   font-family: 'Barrio';
-  src: url('../assets/font/Barrio-Regular.ttf') format('truetype');
+  src: url('./assets/font/Barrio-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

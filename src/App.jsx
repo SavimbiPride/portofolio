@@ -16,7 +16,7 @@ function AppContent() {
     <>
       <Navbar lang={lang} toggleLanguage={toggleLanguage} />
       
-      <Routes>
+      <Routes lang={lang}>
         <Route path="/" element={<PortofolioSatu lang={lang} />} />
         <Route path="/FPE_style" element={<PortofolioDua lang={lang} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
