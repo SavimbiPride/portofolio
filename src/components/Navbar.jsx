@@ -348,9 +348,6 @@ const Navbar = ({ lang, setLang }) => {
               <span className={`text-xs font-semibold tracking-widest uppercase ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${isFuture ? 'text-gray-400' : 'text-[#392F43]'}`}>Now Playing</span>
               <button onClick={() => {
                   setIsMusicOpen(false);
-
-                  audioRef.current?.pause();
-                  setIsPlaying(false);
               }}
               className="text-red-500 hover:text-red-300 transition-colors cursor-pointer">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
