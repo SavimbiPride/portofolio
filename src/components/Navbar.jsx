@@ -53,7 +53,6 @@ const Navbar = ({ lang, setLang }) => {
 
     const audio = audioRef.current;
 
-    // Jika lagu berubah karena pindah rute (misal dari back/forward browser)
     if (audio.src !== new URL(currentAudioPath, window.location.origin).href) {
       audio.pause();
       audio.src = currentAudioPath;

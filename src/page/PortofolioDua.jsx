@@ -2,7 +2,6 @@ import backgroundFpe from '../assets/backgroundfpe.jpeg';
 
 const translations = {
   id: {
-    introTag: "01. Perkenalan",
     greeting: "Halo, Saya seorang",
     role: "Web Developer.",
     bio: "Saya memiliki ketertarikan mendalam dalam membangun aplikasi web modern dan responsif. Menggabungkan desain fungsional dengan arsitektur backend yang solid.",
@@ -22,7 +21,6 @@ const translations = {
     contactDesc: "Tertarik untuk membangun sesuatu yang luar biasa? Jangan ragu untuk menghubungi saya."
   },
   en: {
-    introTag: "01. Introduction",
     greeting: "Hello, I am a",
     role: "Web Developer.",
     bio: "I have a deep passion for building modern and responsive web applications. Combining functional design with a solid backend architecture.",
@@ -48,7 +46,7 @@ const PortofolioDua = ({ lang = 'id' }) => {
 
   return (
     <div 
-      className="animate-[paperReveal_1s_ease] min-h-screen bg-cover bg-center bg-fixed text-[#392F43] font-barrio py-16 px-6 overflow-hidden" 
+      className="animate-[paperReveal_1s_ease] min-h-screen bg-cover bg-center text-[#392F43] font-barrio py-16 px-6 overflow-x-hidden" 
       style={{ backgroundImage: `url(${backgroundFpe})` }}
     >
       
@@ -56,10 +54,6 @@ const PortofolioDua = ({ lang = 'id' }) => {
         
         <section id="about" className="flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1 space-y-6">
-            <h2 className="text-xl tracking-widest uppercase border-b-2 border-[#392F43] inline-block pb-1">
-              {t.introTag}
-            </h2>
-            
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               {t.greeting} <br />
               <span className="bg-[#392F43] text-[#E1E1DF] px-4 py-2 inline-block transform -rotate-2 mt-2 shadow-[4px_4px_0px_#8B9E9C]">

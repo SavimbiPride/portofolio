@@ -205,7 +205,6 @@ body {
   }
 }
 
-/* EFEK BARU: ZOOM & WARP (Tidak ada fade opacity) */
 @keyframes worldTransition {
   0% {
     transform: scale(1) translateZ(0);
@@ -229,7 +228,6 @@ body {
   }
 }
 
-/* EFEK BARU: MUNCUL MENGHENTAK (Menggantikan FadeOpacity) */
 @keyframes dynamicReveal {
   0% {
     opacity: 0;
