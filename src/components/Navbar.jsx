@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import cybertek from "../assets/cybertek.mp3";
 import fpeWelcome from "../assets/fpe_welcome.mp3";
 
@@ -14,16 +14,18 @@ const Navbar = ({ lang, setLang }) => {
   const desktopSettingsRef = useRef(null);
   const mobileSettingsRef = useRef(null);
   const audioRef = useRef(null);
-  const audioPath = isFuture ? cybertek : fpeWelcome;
   const [volume, setVolume] = useState(0.5);
   const [progress, setProgress] = useState(0);
-
+  const musicPopupRef = useRef(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const navigate = useNavigate();
 
   const toggleLanguage = () => {
     setLang((prev) => (prev === 'id' ? 'en' : 'id'));
     setIsSettingsOpen(false);
   };
 
+  // --- HANDLE KLIK DI LUAR DROPDOWN ---
   useEffect(() => {
     const handleClickOutside = (event) => {
       const clickedOutsideDesktop = desktopSettingsRef.current && !desktopSettingsRef.current.contains(event.target);
@@ -40,68 +42,83 @@ const Navbar = ({ lang, setLang }) => {
     };
   }, []);
 
+  // --- SETUP AUDIO & CEK GANTI HALAMAN ---
   useEffect(() => {
-    const audioPath = isFuture ? cybertek : fpeWelcome;
+    const currentAudioPath = isFuture ? cybertek : fpeWelcome;
 
     if (!audioRef.current) {
-      audioRef.current = new Audio(audioPath);
+      audioRef.current = new Audio(currentAudioPath);
       audioRef.current.loop = true;
     }
 
     const audio = audioRef.current;
 
-      if (audio.src !== new URL(audioPath, window.location.origin).href) {
-        const wasPlaying = !audio.paused;
+    // Jika lagu berubah karena pindah rute (misal dari back/forward browser)
+    if (audio.src !== new URL(currentAudioPath, window.location.origin).href) {
+      audio.pause();
+      audio.src = currentAudioPath;
+      audio.load();
+      setIsPlaying(false); 
+    }
+  }, [isFuture]);
 
-        audio.pause();
-        audio.src = audioPath;
-        audio.load();
+  // --- SINKRONISASI STATE PLAY/PAUSE ---
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-        if (wasPlaying) {
-          audio.play().catch(() => {});
-        }
-      }
+    const play = () => setIsPlaying(true);
+    const pause = () => setIsPlaying(false);
 
-      return () => {};
-    }, [isFuture]);
+    audio.addEventListener("play", play);
+    // eslint-disable-next-line
+    audio.addEventListener("pause", pause);
 
-    useEffect(() => {
-        const audio = audioRef.current;
-
-        if (!audio) return;
-
-        const play = () => setIsPlaying(true);
-        const pause = () => setIsPlaying(false);
-
-        audio.addEventListener("play", play);
-        audio.addEventListener("pause", pause);
-
-        return () => {
-            audio.removeEventListener("play", play);
-            audio.removeEventListener("pause", pause);
-        };
-    }, []);
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-          if (!audioRef.current) return;
-
-          const audio = audioRef.current;
-
-          if (audio.duration) {
-              setProgress((audio.currentTime / audio.duration) * 100);
-          }
-      }, 300);
-
-      return () => clearInterval(interval);
+    return () => {
+      audio.removeEventListener("play", play);
+      audio.removeEventListener("pause", pause);
+    };
   }, []);
 
+  // --- UPDATE PROGRESS BAR ---
   useEffect(() => {
-      if (audioRef.current) {
-          audioRef.current.volume = volume;
+    const interval = setInterval(() => {
+      if (!audioRef.current) return;
+      const audio = audioRef.current;
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100);
       }
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // --- UPDATE VOLUME ---
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
   }, [volume]);
 
+  // --- HANDLE KLIK DI LUAR MUSIC PLAYER ---
+  useEffect(() => {
+    const handleClickOutsideMusic = (event) => {
+      if (!isMusicOpen) return;
+
+      const clickedMusic = musicPopupRef.current?.contains(event.target);
+      const clickedDesktopSettings = desktopSettingsRef.current?.contains(event.target);
+      const clickedMobileSettings = mobileSettingsRef.current?.contains(event.target);
+
+      if (!clickedMusic && !clickedDesktopSettings && !clickedMobileSettings) {
+        setIsMusicOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideMusic);
+    return () => document.removeEventListener("mousedown", handleClickOutsideMusic);
+  }, [isMusicOpen]);
+
+  // --- KONTROL MUSIK UTAMA ---
   const toggleMusic = () => {
     if (!audioRef.current) return;
 
@@ -116,32 +133,86 @@ const Navbar = ({ lang, setLang }) => {
   };
 
   const skipForward = () => {
-      if (!audioRef.current) return;
-
-      audioRef.current.currentTime = Math.min(
-          audioRef.current.currentTime + 10,
-          audioRef.current.duration || 0
-      );
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = Math.min(
+      audioRef.current.currentTime + 10,
+      audioRef.current.duration || 0
+    );
   };
 
   const skipBackward = () => {
-      if (!audioRef.current) return;
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = Math.max(
+      audioRef.current.currentTime - 10, 0
+    );
+  };
 
-      audioRef.current.currentTime = Math.max(
-          audioRef.current.currentTime - 10,
-          0
-      );
+  // --- EFEK FADE OUT SAAT GANTI HALAMAN (LALU STOP) ---
+  const fadeToMusic = (newMusic) => {
+    if (!audioRef.current) return;
+
+    const audio = audioRef.current;
+    const targetVolume = volume;
+    const wasPlaying = !audio.paused; // Simpan kondisi sebelum ganti lagu
+
+    // Jika sebelumnya tidak sedang play
+    if (!wasPlaying) {
+      audio.src = newMusic;
+      audio.load();
+      return;
+    }
+
+    let currentVolume = audio.volume;
+
+    const fadeOut = setInterval(() => {
+      currentVolume -= 0.05;
+
+      if (currentVolume <= 0) {
+        clearInterval(fadeOut);
+
+        audio.pause();
+        audio.src = newMusic;
+        audio.load();
+        audio.volume = targetVolume;
+
+        // Tunggu lagu siap lalu play lagi
+        audio.oncanplaythrough = () => {
+          audio.play()
+            .then(() => {
+              setIsPlaying(true);
+            })
+            .catch(console.error);
+
+          audio.oncanplaythrough = null;
+        };
+      } else {
+        audio.volume = currentVolume;
+      }
+    }, 60);
   };
 
   const navLinks = [
     { name: lang === 'id' ? 'Alamat' : 'Address', href: '#alamat' },
   ];
 
+  const changeTheme = () => {
+    if (transitioning) return;
+    setTransitioning(true);
+
+    const targetPath = isPage1 ? "/FPE_style" : "/";
+    fadeToMusic(isPage1 ? fpeWelcome : cybertek);
+
+    setTimeout(() => {
+      navigate(targetPath);
+      setTransitioning(false);
+    }, 1800);
+  };
+
   // --- LOGIKA TEMA DINAMIS ---
   const theme = isPage1 
     ? {
         // Tema Future (Halaman 1) - Solid & Gelap
-        navBg: "bg-neo-black border-gray-800", // Menghapus /80 dan backdrop-blur
+        navBg: "bg-neo-black border-gray-800", 
         topBar: "bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-green-400 animate-pulse",
         logo: "text-white",
         linkText: "text-gray-400 hover:text-cyan-400",
@@ -149,24 +220,31 @@ const Navbar = ({ lang, setLang }) => {
         iconBtn: "text-gray-400 hover:text-cyan-400 hover:bg-gray-800/50",
         dropdownBg: "bg-gray-900 border-gray-700 shadow-lg",
         dropdownItem: "text-gray-300 hover:text-cyan-400 hover:bg-gray-800",
-        mobileMenu: "bg-neo-card border-gray-800",
+        mobileMenu: "bg-neo-card border-gray-800 shadow-xl",
       }
     : {
         // Tema FPE (Halaman 2) - Kertas & Terang
-        navBg: "bg-[#E1E1DF] border-[#392F43] border-b-4 paper-crumpled", 
+        // Menghapus paper-crumpled di area layout krusial agar tidak miring/rusak
+        navBg: "bg-[#E1E1DF] border-[#392F43] border-b-4", 
         topBar: "bg-[#392F43]",
         logo: "text-[#392F43] font-black drop-shadow-[2px_2px_0px_#8B9E9C]",
         linkText: "text-[#392F43] font-bold hover:text-black",
         hoverLine: "bg-[#392F43] h-[3px]",
         iconBtn: "text-[#392F43] hover:bg-white hover:shadow-[2px_2px_0px_#8B9E9C] border-2 border-transparent hover:border-[#392F43]",
-        dropdownBg: "bg-[#E1E1DF] border-2 border-[#392F43] drop-shadow-[5px_5px_0px_#8B9E9C] paper-crumpled",
+        dropdownBg: "bg-[#E1E1DF] border-2 border-[#392F43] drop-shadow-[5px_5px_0px_#8B9E9C]", 
         dropdownItem: "text-[#392F43] font-bold hover:bg-white border-b border-dashed border-gray-400 last:border-0",
-        mobileMenu: "bg-[#E1E1DF] border-[#392F43] border-b-4 paper-crumpled",
+        mobileMenu: "bg-[#E1E1DF] border-[#392F43] border-b-4 shadow-lg", 
       };
 
   return (
     <>
-      {/* Menerapkan theme.navBg di sini */}
+      {transitioning && (
+        <div className="fixed inset-0 z-[9999] pointer-events-none">
+          <div className="absolute inset-0 bg-black animate-fadeOpacity"/>
+          <div className="absolute inset-0 opacity-30 animate-glitch"/>
+        </div>
+      )}
+
       <nav className={`sticky w-full z-[100] top-0 border-b transition-all duration-300 ${theme.navBg}`}>
         <div className={`h-[2px] w-full ${theme.topBar}`}></div>
         
@@ -174,7 +252,7 @@ const Navbar = ({ lang, setLang }) => {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <h1 className={`text-2xl md:text-3xl ${theme.logo}`}>
-                <span className={isPage1 ? "animate-rgb-text font-bold" : "font-barrio"}>&lt;DEV/&gt;</span>
+              <span className={isPage1 ? "animate-rgb-text font-bold" : "font-barrio"}>&lt;DEV/&gt;</span>
             </h1>
 
             {/* Area Desktop */}
@@ -204,20 +282,22 @@ const Navbar = ({ lang, setLang }) => {
 
                 {isSettingsOpen && (
                   <div className={`absolute right-0 mt-4 w-52 border rounded-lg overflow-hidden animate-fade-in-down z-50 ${theme.dropdownBg}`}>
-                    <Link 
-                      to={isPage1 ? "/FPE_style" : "/"} 
-                      onClick={() => setIsSettingsOpen(false)}
-                      className={`block px-4 py-3 text-sm transition-colors ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
+                    <button 
+                      onClick={() => {
+                        setIsSettingsOpen(false);
+                        changeTheme();
+                      }}
+                      className={`w-full text-left block px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
                     >
                       🎨 {isPage1 ? "FPE Style" : "Future Style"}
-                    </Link>
+                    </button>
                     
                     <button 
                       onClick={() => {
                         setIsMusicOpen(true);
                         setIsSettingsOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
+                      className={`w-full text-left block px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
                     >
                       🎵 {lang === 'id' ? 'Buka Musik Player' : 'Open Music Player'}
                     </button>
@@ -226,7 +306,7 @@ const Navbar = ({ lang, setLang }) => {
                       onClick={toggleLanguage}
                       className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
                     >
-                      <span>{lang === 'id' ? '🇬🇧 English' : '🇮🇩 Bahasa Indonesia'}</span>
+                      <span>{lang === 'id' ? '🇬🇧 English' : '🇮🇩 Bahasa'}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold uppercase ${isPage1 ? 'bg-gray-800 text-cyan-400' : 'bg-[#392F43] text-white'}`}>
                         {lang}
                       </span>
@@ -236,6 +316,7 @@ const Navbar = ({ lang, setLang }) => {
               </div>
             </div>
 
+            {/* Mobile Nav Button */}
             <div className="md:hidden flex items-center space-x-4" ref={mobileSettingsRef}>
               <button 
                 onClick={() => {
@@ -271,7 +352,7 @@ const Navbar = ({ lang, setLang }) => {
         {/* Mobile Nav Links */}
         {isOpen && (
           <div className={`md:hidden border-b animate-fade-in-down ${theme.mobileMenu}`}>
-            <div className="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            <div className="px-4 pt-2 pb-6 space-y-2">
               {navLinks.map((link, index) => (
                 <a
                   key={index}
@@ -288,30 +369,32 @@ const Navbar = ({ lang, setLang }) => {
 
         {/* Mobile Settings Menu */}
         {isSettingsOpen && (
-          <div className={`md:hidden border-b shadow-lg animate-fade-in-down ${theme.mobileMenu}`}>
-            <Link 
-              to={isPage1 ? "/FPE_style" : "/"} 
-              onClick={() => setIsSettingsOpen(false)}
-              className={`block px-7 py-3 transition-colors ${theme.dropdownItem}`}
+          <div className={`md:hidden border-b animate-fade-in-down ${theme.mobileMenu}`}>
+            <button 
+              onClick={() => {
+                setIsSettingsOpen(false);
+                changeTheme();
+              }}
+              className={`w-full text-left block px-7 py-4 transition-colors cursor-pointer ${theme.dropdownItem}`}
             >
               🎨 {isPage1 ? "FPE Style" : "Future Style"}
-            </Link>
+            </button>
             
             <button 
               onClick={() => {
                 setIsMusicOpen(true);
                 setIsSettingsOpen(false);
               }}
-              className={`w-full text-left px-7 py-3 transition-colors cursor-pointer ${theme.dropdownItem}`}
+              className={`w-full text-left block px-7 py-4 transition-colors cursor-pointer ${theme.dropdownItem}`}
             >
               🎵 {lang === 'id' ? 'Buka Musik Player' : 'Open Music Player'}
             </button>
 
             <button
               onClick={toggleLanguage}
-              className={`w-full py-4 flex items-center justify-center transition-colors ${theme.dropdownItem}`}
+              className={`w-full py-5 flex items-center justify-center transition-colors cursor-pointer ${theme.dropdownItem}`}
             >
-              <span className="text-xl leading-none">
+              <span className="text-xl font-bold leading-none">
                 {lang === 'id' ? '🇬🇧 Switch to English' : '🇮🇩 Ganti ke Indonesia'}
               </span>
             </button>
@@ -319,9 +402,9 @@ const Navbar = ({ lang, setLang }) => {
         )}
       </nav>
 
+      {/* --- MUSIC PLAYER POPUP --- */}
       {isMusicOpen && (() => {
-        const isFuture = isPage1;
-        const music = isFuture 
+        const music = isPage1 
         ? {
             title: "Cybertek",
             artist: "Frank Klepacki",
@@ -332,7 +415,7 @@ const Navbar = ({ lang, setLang }) => {
             progressBar: "bg-cyan-400"
           }
         : {
-            title: "FPE Da Fangame OST Welcome [Variant2]",
+            title: "FPE Welcome",
             artist: "weercal",
             bg: "bg-[#E1E1DF] border-[#392F43] border-2",
             text: "text-[#392F43]",
@@ -342,66 +425,51 @@ const Navbar = ({ lang, setLang }) => {
           };
 
         return (
-          <div className={`fixed bottom-6 right-6 w-80 ${music.bg} rounded-xl shadow-[5px_5px_0px_rgba(0,0,0,0.2)] z-[60] overflow-hidden animate-fade-in-down`}>
-            {/* Header */}
-            <div className={`flex justify-between items-center px-4 py-2 border-b ${isFuture ? 'bg-gray-800 border-gray-700' : 'bg-[#D1D1CF] border-[#392F43]'}`}>
-              <span className={`text-xs font-semibold tracking-widest uppercase ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${isFuture ? 'text-gray-400' : 'text-[#392F43]'}`}>Now Playing</span>
-              <button onClick={() => {
-                  setIsMusicOpen(false);
-              }}
-              className="text-red-500 hover:text-red-300 transition-colors cursor-pointer">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <div ref={musicPopupRef} className={`fixed bottom-6 right-6 w-80 ${music.bg} rounded-xl shadow-[5px_5px_0px_rgba(0,0,0,0.2)] z-[60] overflow-hidden animate-fade-in-down`}>
+            <div className={`flex justify-between items-center px-4 py-2 border-b ${isPage1 ? 'bg-gray-800 border-gray-700' : 'bg-[#D1D1CF] border-[#392F43]'}`}>
+              <span className={`text-xs font-semibold tracking-widest uppercase ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${isPage1 ? 'text-gray-400' : 'text-[#392F43]'}`}>
+                Now Playing
+              </span>
+              <button 
+                onClick={() => setIsMusicOpen(false)}
+                className="text-red-500 hover:text-red-300 transition-colors cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
               </button>
             </div>
             
-            {/* Content */}
             <div className="p-5 flex items-center space-x-4">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${isFuture ? 'bg-gradient-to-tr from-cyan-400 to-fuchsia-500' : 'bg-[#392F43]'} ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}>
-                <div className={`w-4 h-4 rounded-full ${isFuture ? 'bg-neo-black' : 'bg-[#E1E1DF]'}`}></div>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${isPage1 ? 'bg-gradient-to-tr from-cyan-400 to-fuchsia-500' : 'bg-[#392F43]'} ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}>
+                <div className={`w-4 h-4 rounded-full ${isPage1 ? 'bg-neo-black' : 'bg-[#E1E1DF]'}`}></div>
               </div>
               
               <div className="flex-1 min-w-0">
-                <h4 className={`text-sm font-bold truncate ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${music.text}`}>{music.title}</h4>
-                <p className={`text-xs truncate ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${music.subText}`}>{music.artist}</p>
+                <h4 className={`text-sm font-bold truncate ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio tracking-widest"} ${music.text}`}>{music.title}</h4>
+                <p className={`text-xs truncate font-sans font-bold ${music.subText}`}>{music.artist}</p>
               </div>
             </div>
 
-            {/* Controls */}
             <div className="px-5 pb-5">
-
               {/* Progress */}
               <div
-                className={`h-1.5 w-full rounded-full cursor-pointer mb-5 overflow-hidden ${
-                  isFuture ? "bg-gray-800" : "bg-gray-300"
-                }`}
+                className={`h-1.5 w-full rounded-full cursor-pointer mb-5 overflow-hidden ${isPage1 ? "bg-gray-800" : "bg-gray-300"}`}
                 onClick={(e) => {
                   if (!audioRef.current) return;
-
                   const rect = e.currentTarget.getBoundingClientRect();
                   const percent = (e.clientX - rect.left) / rect.width;
-
-                  audioRef.current.currentTime =
-                    percent * audioRef.current.duration;
+                  audioRef.current.currentTime = percent * audioRef.current.duration;
                 }}
               >
-                <div
-                  className={`h-full ${music.progressBar}`}
-                  style={{ width: `${progress}%` }}
-                />
+                <div className={`h-full ${music.progressBar}`} style={{ width: `${progress}%` }} />
               </div>
 
               {/* Volume */}
               <div className="flex items-center gap-3 mb-6">
-                <svg
-                  className={`w-5 h-5 ${
-                    isFuture ? "text-white" : "text-[#392F43]"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className={`w-5 h-5 ${isPage1 ? "text-white" : "text-[#392F43]"}`} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M5 9v6h4l5 5V4L9 9H5z" />
                 </svg>
-
                 <input
                   type="range"
                   min="0"
@@ -411,77 +479,32 @@ const Navbar = ({ lang, setLang }) => {
                   onChange={(e) => setVolume(Number(e.target.value))}
                   className="flex-1 accent-cyan-500 cursor-pointer"
                 />
-
-                <span
-                  className={`text-xs w-8 ${
-                    isFuture ? "text-cyan-400" : "text-[#392F43]"
-                  }`}
-                >
+                <span className={`text-xs font-bold w-8 ${isPage1 ? "text-cyan-400" : "text-[#392F43]"}`}>
                   {Math.round(volume * 100)}%
                 </span>
               </div>
 
               {/* Player Buttons */}
               <div className="flex justify-center items-center gap-8">
-
-                {/* Back 10s */}
-                <button
-                  onClick={skipBackward}
-                  title="Back 10 Seconds"
-                  className="cursor-pointer opacity-70 hover:opacity-100 transition-transform hover:scale-110"
-                >
-                  <svg
-                    className={`w-6 h-6 ${
-                      isFuture ? "text-white" : "text-[#392F43]"
-                    }`}
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                <button onClick={skipBackward} title="Back 10 Seconds" className="cursor-pointer opacity-70 hover:opacity-100 transition-transform hover:scale-110">
+                  <svg className={`w-6 h-6 ${isPage1 ? "text-white" : "text-[#392F43]"}`} fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 20L9 12l10-8v16zM5 19h2V5H5v14z"/>
                   </svg>
                 </button>
 
-                {/* Play / Pause */}
-                <button
-                  onClick={toggleMusic}
-                  className={`w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${music.btn}`}
-                >
+                <button onClick={toggleMusic} className={`w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${music.btn}`}>
                   {isPlaying ? (
-                    <svg
-                      className="w-7 h-7"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                    </svg>
+                    <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                   ) : (
-                    <svg
-                      className="w-7 h-7 ml-1"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
+                    <svg className="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                   )}
                 </button>
 
-                {/* Forward 10s */}
-                <button
-                  onClick={skipForward}
-                  title="Forward 10 Seconds"
-                  className="cursor-pointer opacity-70 hover:opacity-100 transition-transform hover:scale-110"
-                >
-                  <svg
-                    className={`w-6 h-6 ${
-                      isFuture ? "text-white" : "text-[#392F43]"
-                    }`}
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                <button onClick={skipForward} title="Forward 10 Seconds" className="cursor-pointer opacity-70 hover:opacity-100 transition-transform hover:scale-110">
+                  <svg className={`w-6 h-6 ${isPage1 ? "text-white" : "text-[#392F43]"}`} fill="currentColor" viewBox="0 0 24 24">
                     <path d="M5 4l10 8-10 8V4zm14 15h-2V5h2v14z"/>
                   </svg>
                 </button>
-
               </div>
             </div>
           </div>

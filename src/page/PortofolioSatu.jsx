@@ -56,10 +56,9 @@ const Portfolio = ({ lang = 'id' }) => {
   const t = translations[lang] || translations.id;
 
   return (
-    <div className="relative min-h-screen bg-neo-black text-gray-300 font-sans selection:bg-cyan-500 selection:text-white overflow-hidden">
-      
+    <div className="animate-[fadeIn_.8s_ease] relative min-h-screen bg-neo-black text-gray-300 font-sans selection:bg-cyan-500 selection:text-white overflow-hidden">
+    
       <BackgroundLines />
-
       <div className="relative z-10">
         <div className="h-1 w-full bg-gradient-to-r from-blue-600 via-cyan-400 to-purple-600 animate-pulse"></div>
 

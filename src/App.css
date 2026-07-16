@@ -1,70 +1,294 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-image: url('./assets/backgroundfpe.jpeg');
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  @apply text-[#392F43];
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
+  color: #392F43;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.paper-crumpled {
-  background-image: url('/assets/crumpledtexture.jpeg');
-  background-color: rgba(255, 255, 255, 0.85);
-  background-blend-mode: multiply;
-  backdrop-filter: blur(2px);
-}
-
-.paper-ripped {
-  clip-path: polygon(1% 0, 100% 2%, 98% 100%, 0 98%, 2% 50%);
-}
+/* ===========================
+   FONT
+=========================== */
 
 @font-face {
-  font-family: 'Barrio';
-  src: url('./assets/font/Barrio-Regular.ttf') format('truetype');
+  font-family: "Barrio";
+  src: url("./assets/font/Barrio-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
+
+/* ===========================
+   TAILWIND THEME
+=========================== */
 
 @theme {
   --color-neo-black: #070b14;
   --color-neo-card: #0d1526;
-  
+
+  --font-barrio: "Barrio", sans-serif;
+
   --animate-rgb-glow: rgbGlow 3s linear infinite;
   --animate-rgb-text: rgbText 3s linear infinite;
   --animate-rgb-stroke: rgbStroke 3s linear infinite;
 
-  --font-barrio: "Barrio", sans-serif;
-
   @keyframes rgbGlow {
-    0%, 100% { 
-      border-color: #00ffff; 
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); 
+    0%,
+    100% {
+      border-color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, .6);
     }
-    33% { 
-      border-color: #ff00ff; 
-      box-shadow: 0 0 20px rgba(255, 0, 255, 0.6); 
+
+    33% {
+      border-color: #ff00ff;
+      box-shadow: 0 0 20px rgba(255, 0, 255, .6);
     }
-    66% { 
-      border-color: #39ff14; 
-      box-shadow: 0 0 20px rgba(57, 255, 20, 0.6); 
+
+    66% {
+      border-color: #39ff14;
+      box-shadow: 0 0 20px rgba(57, 255, 20, .6);
     }
   }
 
   @keyframes rgbText {
-    0%, 100% { color: #00ffff; }
-    33% { color: #ff00ff; }
-    66% { color: #39ff14; }
+    0%,
+    100% {
+      color: #00ffff;
+    }
+
+    33% {
+      color: #ff00ff;
+    }
+
+    66% {
+      color: #39ff14;
+    }
   }
 
   @keyframes rgbStroke {
-    0%, 100% { stroke: #00ffff; filter: drop-shadow(0 0 8px #00ffff); }
-    33% { stroke: #ff00ff; filter: drop-shadow(0 0 8px #ff00ff); }
-    66% { stroke: #39ff14; filter: drop-shadow(0 0 8px #39ff14); }
+    0%,
+    100% {
+      stroke: #00ffff;
+      filter: drop-shadow(0 0 8px #00ffff);
+    }
+
+    33% {
+      stroke: #ff00ff;
+      filter: drop-shadow(0 0 8px #ff00ff);
+    }
+
+    66% {
+      stroke: #39ff14;
+      filter: drop-shadow(0 0 8px #39ff14);
+    }
   }
 }
 
-html {
-  scroll-behavior: smooth;
+/* ===========================
+   PAPER EFFECT
+=========================== */
+
+.paper-crumpled {
+  position: relative;
+  overflow: hidden;
+
+  background-image: url("./assets/crumpledtexture.jpeg");
+  background-color: rgba(255,255,255,.88);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+
+  backdrop-filter: blur(2px);
+
+  animation: paperReveal .8s cubic-bezier(.18,.89,.32,1.28);
+}
+
+.paper-crumpled::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  opacity: .08;
+
+  background-image:
+    radial-gradient(circle, #000 1px, transparent 1px);
+
+  background-size: 5px 5px;
+
+  animation: grain 6s steps(8) infinite;
+}
+
+.paper-ripped {
+  clip-path: polygon(
+    1% 0%,
+    100% 2%,
+    98% 100%,
+    0% 98%,
+    2% 50%
+  );
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+@keyframes paperReveal {
+  0% {
+    opacity: 0;
+    transform:
+      translateY(30px)
+      scale(.92)
+      rotate(5deg);
+    filter: blur(10px);
+  }
+
+  60% {
+    opacity: 1;
+    transform:
+      translateY(-5px)
+      scale(1.03)
+      rotate(-2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0);
+    filter: none;
+  }
+}
+
+@keyframes grain {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-4px,3px); }
+  50% { transform: translate(4px,-2px); }
+  75% { transform: translate(-2px,-4px); }
+  100% { transform: translate(0,0); }
+}
+
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+    text-shadow: none;
+    filter: none;
+  }
+  20% {
+    transform: translate(-4px,2px);
+    text-shadow: 3px 0 cyan, -3px 0 red;
+  }
+  40% {
+    transform: translate(5px,-2px);
+    text-shadow: -3px 0 lime, 3px 0 magenta;
+  }
+  60% {
+    transform: translate(-3px,3px);
+    text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
+  }
+  80% {
+    transform: translate(3px,-3px);
+  }
+}
+
+/* EFEK BARU: ZOOM & WARP (Tidak ada fade opacity) */
+@keyframes worldTransition {
+  0% {
+    transform: scale(1) translateZ(0);
+    filter: brightness(1) blur(0);
+  }
+  25% {
+    transform: scale(1.1) skewX(2deg);
+    filter: brightness(1.2) contrast(1.2);
+  }
+  50% {
+    transform: scale(1.6) skewX(-3deg);
+    filter: brightness(1.5) contrast(1.5) blur(6px);
+  }
+  75% {
+    transform: scale(1.1) skewX(2deg);
+    filter: brightness(1.2) contrast(1.2);
+  }
+  100% {
+    transform: scale(1) translateZ(0);
+    filter: brightness(1) blur(0);
+  }
+}
+
+/* EFEK BARU: MUNCUL MENGHENTAK (Menggantikan FadeOpacity) */
+@keyframes dynamicReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* EFEK BARU: KILATAN ENERGI (Menggantikan whiteFlash) */
+@keyframes actionFlash {
+  0% {
+    filter: brightness(1) contrast(1);
+    transform: scale(1);
+  }
+  30% {
+    filter: brightness(2.5) contrast(2);
+    transform: scale(1.03) skewX(3deg);
+  }
+  100% {
+    filter: brightness(1) contrast(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes rgbSplit {
+  0% { transform: translateX(0); filter: hue-rotate(0deg); }
+  25% { transform: translateX(-6px); filter: hue-rotate(90deg); }
+  50% { transform: translateX(5px); filter: hue-rotate(180deg); }
+  75% { transform: translateX(-3px); filter: hue-rotate(270deg); }
+  100% { transform: translateX(0); filter: hue-rotate(360deg); }
+}
+
+/* ===========================
+   UTILITIES
+=========================== */
+
+.animate-glitch {
+  animation: glitch .15s infinite;
+}
+
+.animate-world-transition {
+  animation: worldTransition .9s ease-in-out;
+}
+
+.animate-dynamic-reveal {
+  animation: dynamicReveal 1.2s cubic-bezier(.18,.89,.32,1.28) forwards;
+}
+
+.animate-action-flash {
+  animation: actionFlash .6s ease-out;
+}
+
+.animate-rgb-split {
+  animation: rgbSplit .15s infinite;
 }
