@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import cybertek from "../assets/cybertek.mp3";
 import fpeWelcome from "../assets/fpe_welcome.mp3";
+import fpeicon from "../assets/miss-circle.png";
+import portfolioIcon from "../assets/copyright.png";
 
 const Navbar = ({ lang, setLang }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -286,9 +288,27 @@ const Navbar = ({ lang, setLang }) => {
                         setIsSettingsOpen(false);
                         changeTheme();
                       }}
-                      className={`w-full text-left block px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
+                      className={`w-full text-left flex items-center gap-2 px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
                     >
-                      🎨 {isPage1 ? "FPE Style" : "Future Style"}
+                      {isPage1 ? (
+                        <>
+                          <img 
+                            src={fpeicon} 
+                            alt="FPE Fandom" 
+                            className="w-5 h-5 object-contain" 
+                          />
+                          <span>FPE Fandom</span>
+                        </>
+                      ) : (
+                        <>
+                          <img 
+                            src={portfolioIcon}
+                            alt="Portfolio" 
+                            className="w-5 h-5 object-contain" 
+                          />
+                          <span>portofolio</span>
+                        </>
+                      )}
                     </button>
                     
                     <button 
@@ -298,7 +318,7 @@ const Navbar = ({ lang, setLang }) => {
                       }}
                       className={`w-full text-left block px-4 py-3 text-sm transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
                     >
-                      🎵 {lang === 'id' ? 'Buka Musik Player' : 'Open Music Player'}
+                      🎵 {lang === 'id' ? 'Musik Player' : 'Music Player'}
                     </button>
 
                     <button 
