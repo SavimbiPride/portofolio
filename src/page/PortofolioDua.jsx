@@ -1,43 +1,356 @@
 import backgroundFpe from '../assets/backgroundfpe.jpeg';
+import profileImg from '../assets/fpe_logo.png'; // Pastikan path foto sesuai
+
+import missCircle from "./assets/miss-circle.png";
+import missThavel from "./assets/miss-thavel.png";
+import missBloomie from "./assets/miss-bloomie.png";
+import missGrace from "./assets/miss-grace.png";
+import misterDemi from "./assets/mister-demi.png";
+import missEmily from "./assets/miss-emily.png";
+import misterCompass from "./assets/mister-compass.png";
+
+import abbie from "./assets/abbie.png";
+import claire from "./assets/claire.png";
+import engel from "./assets/engel.png";
+import bubble from "./assets/bubble.png";
+import lana from "./assets/lana.png";
+import oliver from "./assets/oliver.png";
+import zip from "./assets/zip.png";
+import edward from "./assets/edward.png";
+import petunia from "./assets/petunia.png";
+import lizzy from "./assets/lizzy.png";
+import kevin from "./assets/kevin.png";
+import cubby from "./assets/cubby.png";
+import robby from "./assets/robby.png";
+import ruby from "./assets/ruby.png";
+import skell from "./assets/skell.png";
+import riley from "./assets/riley.png";
+
+const dummyStudents = [
+  {
+    id: 1,
+    name: "Abbie",
+    role: {
+      id: "Siswa #1",
+      en: "Student #1"
+    },
+    desc: {
+      id: "Sering panik saat ujian.",
+      en: "Often panics during exams."
+    },
+    image: abbie
+  },
+  {
+    id: 2,
+    name: "Claire",
+    role: {
+      id: "Siswa #2",
+      en: "Student #2"
+    },
+    desc: {
+      id: "Siswa baru yang misterius.",
+      en: "A mysterious new student."
+    },
+    image: claire
+  },
+  {
+    id: 3,
+    name: "Engel",
+    role: {
+      id: "Siswa #3",
+      en: "Student #3"
+    },
+    desc: {
+      id: "Pelindung teman-temannya.",
+      en: "A protector of his friends."
+    },
+    image: engel
+  },
+  {
+    id: 4,
+    name: "Bubble",
+    role: {
+      id: "Siswa #4",
+      en: "Student #4"
+    },
+    desc: {
+      id: "Ceria dan ramah.",
+      en: "Cheerful and friendly."
+    },
+    image: bubble
+  },
+  {
+    id: 5,
+    name: "Lana",
+    role: {
+      id: "Siswa #5",
+      en: "Student #5"
+    },
+    desc: {
+      id: "Suka menggunakan boneka tangan.",
+      en: "Likes using hand puppets."
+    },
+    image: lana
+  },
+  {
+    id: 6,
+    name: "Oliver",
+    role: {
+      id: "Siswa #6",
+      en: "Student #6"
+    },
+    desc: {
+      id: "Suka berbuat jahil.",
+      en: "Likes playing pranks."
+    },
+    image: oliver
+  },
+  {
+    id: 7,
+    name: "Zip",
+    role: {
+      id: "Siswa #7",
+      en: "Student #7"
+    },
+    desc: {
+      id: "Anggota kelompok pembuat onar.",
+      en: "A member of the troublemaking group."
+    },
+    image: zip
+  },
+  {
+    id: 8,
+    name: "Edward",
+    role: {
+      id: "Siswa #8",
+      en: "Student #8"
+    },
+    desc: {
+      id: "Suka bereksperimen dan inventif.",
+      en: "Enjoys experimenting and is inventive."
+    },
+    image: edward
+  },
+  {
+    id: 9,
+    name: "Petunia",
+    role: {
+      id: "Siswa #9",
+      en: "Student #9"
+    },
+    desc: {
+      id: "Siswa yang bergaya dan populer.",
+      en: "A stylish and popular student."
+    },
+    image: petunia
+  },
+  {
+    id: 10,
+    name: "Lizzy",
+    role: {
+      id: "Siswa #10",
+      en: "Student #10"
+    },
+    desc: {
+      id: "Teman dekat Petunia.",
+      en: "Petunia's close friend."
+    },
+    image: lizzy
+  },
+  {
+    id: 11,
+    name: "Kevin",
+    role: {
+      id: "Siswa #11",
+      en: "Student #11"
+    },
+    desc: {
+      id: "Kutu buku sekolah.",
+      en: "The school's bookworm."
+    },
+    image: kevin
+  },
+  {
+    id: 12,
+    name: "Cubby",
+    role: {
+      id: "Siswa #12",
+      en: "Student #12"
+    },
+    desc: {
+      id: "Pendiam dan tenang.",
+      en: "Quiet and calm."
+    },
+    image: cubby
+  },
+  {
+    id: 13,
+    name: "Robby",
+    role: {
+      id: "Siswa #13",
+      en: "Student #13"
+    },
+    desc: {
+      id: "Suka merakit peralatan.",
+      en: "Likes assembling equipment."
+    },
+    image: robby
+  },
+  {
+    id: 14,
+    name: "Ruby",
+    role: {
+      id: "Siswa #14",
+      en: "Student #14"
+    },
+    desc: {
+      id: "Siswa dengan kepala layar televisi.",
+      en: "A student with a television screen for a head."
+    },
+    image: ruby
+  },
+  {
+    id: 15,
+    name: "Skell",
+    role: {
+      id: "Siswa #15",
+      en: "Student #15"
+    },
+    desc: {
+      id: "Siswa bergaya emo/goth.",
+      en: "An emo/goth-styled student."
+    },
+    image: skell
+  },
+  {
+    id: 16,
+    name: "Riley",
+    role: {
+      id: "Siswa #16",
+      en: "Student #16"
+    },
+    desc: {
+      id: "Siswa yang cukup terobsesi.",
+      en: "A rather obsessive student."
+    },
+    image: riley
+  }
+];
+
+const dummyTeachers = [
+  {
+    id: 1,
+    name: "Miss Circle",
+    role: {
+      id: "Guru Matematika",
+      en: "Math Teacher"
+    },
+    desc: {
+      id: "Sangat tegas dengan nilai Matematika.",
+      en: "Very strict about Mathematics grades."
+    },
+    image: missCircle
+  },
+  {
+    id: 2,
+    name: "Miss Thavel",
+    role: {
+      id: "Guru Bahasa",
+      en: "Language Teacher"
+    },
+    desc: {
+      id: "Mengajar bahasa dengan disiplin tinggi.",
+      en: "Teaches languages with high discipline."
+    },
+    image: missThavel
+  },
+  {
+    id: 3,
+    name: "Miss Bloomie",
+    role: {
+      id: "Guru Sains",
+      en: "Science Teacher"
+    },
+    desc: {
+      id: "Guru sains yang tidak kalah galak.",
+      en: "A science teacher who is just as strict."
+    },
+    image: missBloomie
+  },
+  {
+    id: 4,
+    name: "Miss Grace",
+    role: {
+      id: "Kepala Sekolah",
+      en: "Principal"
+    },
+    desc: {
+      id: "Kepala sekolah Akademi Kertas.",
+      en: "The principal of Paper Academy."
+    },
+    image: missGrace
+  },
+  {
+    id: 5,
+    name: "Mister Demi",
+    role: {
+      id: "Guru Musik",
+      en: "Music Teacher"
+    },
+    desc: {
+      id: "Guru musik yang pemalu dan lembut.",
+      en: "A shy and gentle music teacher."
+    },
+    image: misterDemi
+  },
+  {
+    id: 6,
+    name: "Miss Emily",
+    role: {
+      id: "Guru Sejarah",
+      en: "History Teacher"
+    },
+    desc: {
+      id: "Guru sejarah yang ramah.",
+      en: "A friendly history teacher."
+    },
+    image: missEmily
+  },
+  {
+    id: 7,
+    name: "Mister Compass",
+    role: {
+      id: "Guru Pengganti",
+      en: "Substitute Teacher"
+    },
+    desc: {
+      id: "Guru pengganti yang misterius.",
+      en: "A mysterious substitute teacher."
+    },
+    image: misterCompass
+  }
+];
 
 const translations = {
   id: {
-    greeting: "Halo, Saya seorang",
-    role: "Web Developer.",
-    bio: "Saya memiliki ketertarikan mendalam dalam membangun aplikasi web modern dan responsif. Menggabungkan desain fungsional dengan arsitektur backend yang solid.",
-    education: "Pendidikan",
-    major: "Rekayasa Perangkat Lunak",
-    experience: "Pengalaman",
-    expTitle: "Magang Web Developer",
-    techStack: "Tech Stack",
-    projects: "Featured Projects",
-    project1Desc: "Landing page interaktif dengan navigasi sticky, side menu, dan integrasi antarmuka chatbot.",
-    project2Desc: "Pengembangan arsitektur backend, integrasi database MySQL, dan pembuatan RESTful API menggunakan Express.js.",
-    certificates: "Sertifikasi",
-    certProvider: "Penyelenggara XYZ",
-    year: "Tahun 2026",
-    verifyLink: "Verifikasi Link",
-    collaborate: "Mari Berkolaborasi",
-    contactDesc: "Tertarik untuk membangun sesuatu yang luar biasa? Jangan ragu untuk menghubungi saya."
+    title1: "Fundamental",
+    title2: "Paper Education",
+    lore: "Lore & Karakter",
+    characterSection: "Karakter FPE (23 Total)",
+    studentsTitle: "Siswa (16 Students)",
+    teachersTitle: "Guru (7 Teachers)",
+    characterDesc: "Sebuah entitas tenang di tengah hiruk-pikuk dunia Fundamental Paper Education. Karakter 23 dikenal karena kemampuannya mengobservasi dalam keheningan, menyimpan berbagai misteri di balik lembaran-lembaran kertas yang usang.",
+    collaborate: "semua nya milik Katie",
   },
   en: {
-    greeting: "Hello, I am a",
-    role: "Web Developer.",
-    bio: "I have a deep passion for building modern and responsive web applications. Combining functional design with a solid backend architecture.",
-    education: "Education",
-    major: "Software Engineering",
-    experience: "Experience",
-    expTitle: "Web Developer Intern",
-    techStack: "Tech Stack",
-    projects: "Featured Projects",
-    project1Desc: "Interactive landing page featuring sticky navigation, side menu, and chatbot interface integration.",
-    project2Desc: "Backend architecture development, MySQL database integration, and RESTful API creation using Express.js.",
-    certificates: "Certifications",
-    certProvider: "XYZ Organizer",
-    year: "Year 2026",
-    verifyLink: "Verify Link",
-    collaborate: "Let's Collaborate",
-    contactDesc: "Interested in building something amazing? Feel free to reach out to me."
+    title1: "Fundamental",
+    title2: "Paper Education",
+    lore: "Lore & Characters",
+    characterSection: "FPE Characters (23 Total)",
+    studentsTitle: "Students (16 Students)",
+    teachersTitle: "Teachers (7 Teachers)",
+    characterDesc: "A tranquil entity amidst the chaos of the Fundamental Paper Education world. Character 23 is known for observing in silence, keeping mysteries behind the worn-out paper sheets.",
+    collaborate: "all belong to Katie",
   }
 };
 
@@ -52,133 +365,167 @@ const PortofolioDua = ({ lang = 'id' }) => {
       
       <div className="max-w-6xl mx-auto space-y-24 relative z-10">
         
+        {/* --- SECTION 1: ABOUT (Pengenalan) --- */}
         <section id="about" className="flex flex-col md:flex-row gap-12 items-center">
-          <div className="flex-1 space-y-6">
+          {/* Foto Lingkaran di Sebelah Kiri */}
+          <div className="w-56 h-56 md:w-72 md:h-72 flex-shrink-0 rounded-full border-4 border-[#392F43] drop-shadow-[8px_8px_0px_#8B9E9C] overflow-hidden bg-white hover:scale-105 transition-transform duration-300">
+            <img 
+              src={profileImg} 
+              alt="Profile Karakter" 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = 'https://placehold.co/400x400/png?text=Photo';
+              }}
+            />
+          </div>
+
+          <div className="flex-1 space-y-8 text-center md:text-left">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              {t.greeting} <br />
+              {t.title1} <br />
               <span className="bg-[#392F43] text-[#E1E1DF] px-4 py-2 inline-block transform -rotate-2 mt-2 shadow-[4px_4px_0px_#8B9E9C]">
-                {t.role}
+                {t.title2}
               </span>
             </h1>
 
             {/* Kotak Deskripsi: Kertas Kusut & Sobek */}
-            <div className="paper-crumpled paper-ripped p-6 border-2 border-[#392F43] drop-shadow-[5px_5px_0px_#8B9E9C] transform rotate-1">
-              <p className="text-xl leading-relaxed">
-                {t.bio}
+            <div className="paper-crumpled paper-ripped px-8 py-4 border-2 border-[#392F43] drop-shadow-[5px_5px_0px_#8B9E9C] transform rotate-1 inline-block">
+              <p className="text-2xl md:text-3xl font-bold tracking-wider italic">
+                "learning is fun"
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-              {/* Kotak Pendidikan */}
-              <div className="paper-crumpled paper-ripped p-5 border-2 border-[#392F43] drop-shadow-[4px_4px_0px_#8B9E9C] hover:-translate-y-1 transition-transform">
-                <h3 className="text-xl font-bold border-b-2 border-dashed border-[#392F43] pb-2 mb-2">{t.education}</h3>
-                <p className="text-lg">SMK PGRI 3</p>
-                <p className="text-sm font-sans font-bold opacity-80">{t.major}</p>
-              </div>
-              {/* Kotak Pengalaman */}
-              <div className="paper-crumpled paper-ripped p-5 border-2 border-[#392F43] drop-shadow-[4px_4px_0px_#8B9E9C] hover:-translate-y-1 transition-transform">
-                <h3 className="text-xl font-bold border-b-2 border-dashed border-[#392F43] pb-2 mb-2">{t.experience}</h3>
-                <p className="text-lg">{t.expTitle}</p>
-                <p className="text-sm font-sans font-bold opacity-80">2025 - 2026</p>
-              </div>
-            </div>
           </div>
         </section>
 
-        {/* --- SECTION 2: SKILLS --- */}
-        <section id="skills" className="space-y-8">
+        {/* --- SECTION 2: LORE & KARAKTER (23 Total) --- */}
+        <section id="lore" className="space-y-12">
           <h2 className="text-4xl font-bold border-b-4 border-[#392F43] pb-2 inline-block transform -rotate-1">
-            {t.techStack}
+            lore
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { title: "Frontend", skills: "HTML, CSS, JS, React" },
-              { title: "Backend", skills: "Node.js, Express" },
-              { title: "Database", skills: "MySQL" },
-              { title: "Tools", skills: "Git, Figma, VS Code" }
-            ].map((item, idx) => (
-              <div 
-                key={idx} 
-                className={`paper-crumpled paper-ripped p-6 border-2 border-[#392F43] drop-shadow-[5px_5px_0px_#8B9E9C] hover:scale-105 transition-transform ${idx % 2 === 0 ? 'transform rotate-2' : 'transform -rotate-2'}`}
-              >
-                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-base font-sans font-bold">{item.skills}</p>
-              </div>
-            ))}
+          
+          {/* Lore Text Box */}
+          <div className="paper-crumpled paper-ripped p-8 border-2 border-[#392F43] drop-shadow-[7px_7px_0px_#8B9E9C] transform rotate-1">
+            <h3 className="text-3xl font-bold mb-4 border-b-2 border-dashed border-[#392F43] pb-2 inline-block">
+              Akademi Kertas
+            </h3>
+            <p className="text-xl font-sans font-semibold leading-relaxed mt-4">
+              {t.characterDesc}
+            </p>
+          </div>
+
+          <h2 className="text-4xl font-bold border-b-4 border-[#392F43] pb-2 inline-block transform -rotate-1">
+            characters
+          </h2>
+
+          {/* Sub-section: 16 Students */}
+          <div className="space-y-6">
+            <h3 className="text-3xl font-bold bg-[#392F43] text-white px-4 py-2 inline-block shadow-[4px_4px_0px_#8B9E9C] transform -rotate-1">
+              {t.studentsTitle}
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
+              {dummyStudents.map((char, idx) => (
+                <div
+                  key={char.id}
+                  className={`flex items-center gap-5 ${
+                    idx % 2 === 0 ? "-rotate-1" : "rotate-1"
+                  }`}
+                >
+
+                  {/* IMAGE MASING-MASING STUDENT */}
+                  <div className="w-60 h-72 flex-shrink-0 overflow-visible">
+                    <img
+                      src={char.image}
+                      alt={char.name}
+                      className="w-full h-full object-contain scale-110"
+                    />
+                  </div>
+
+                  {/* CONTAINER NAMA + BIO */}
+                  <div
+                    className="
+                      paper-crumpled paper-ripped
+                      border-2 border-[#392F43]
+                      drop-shadow-[4px_4px_0px_#8B9E9C]
+                      p-5
+                      flex-1
+                      min-h-[220px]
+                      text-left
+                      flex flex-col justify-start
+                    "
+                  >
+                    <h4 className="text-2xl font-bold leading-tight">
+                      {char.name}
+                    </h4>
+
+                    <p className="text-sm font-sans mt-5 font-bold opacity-75">
+                      {char.role[lang]}
+                    </p>
+
+                    <p className="text-sm font-sans mt-1 leading-relaxed">
+                      {char.desc[lang]}
+                    </p>
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sub-section: 7 Teachers */}
+          <div className="space-y-6">
+            <h3 className="text-3xl font-bold bg-[#392F43] text-white px-4 py-2 inline-block shadow-[4px_4px_0px_#8B9E9C] transform rotate-1">
+              {t.teachersTitle}
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
+              {dummyTeachers.map((char, idx) => (
+                <div
+                  key={char.id}
+                  className={`flex items-center gap-5 ${
+                    idx % 2 === 0 ? "-rotate-1" : "rotate-1"
+                  }`}
+                >
+
+                  {/* IMAGE KARAKTER */}
+                  <div className="w-60 h-72 flex-shrink-0 overflow-visible">
+                    <img
+                      src={char.image}
+                      alt={char.name}
+                      className="w-full h-full object-contain scale-110"
+                    />
+                  </div>
+
+                  {/* CONTAINER NAMA + BIO */}
+                  <div
+                    className="
+                      paper-crumpled paper-ripped
+                      border-2 border-[#392F43]
+                      drop-shadow-[4px_4px_0px_#8B9E9C]
+                      p-5
+                      flex-1
+                      min-h-[220px]
+                      text-left
+                      flex flex-col justify-start
+                    "
+                  >
+                    {/* NAMA */}
+                    <h4 className="text-2xl font-bold leading-tight">
+                      {char.name}
+                    </h4>
+
+                    <p className="text-sm font-sans mt-5 font-bold opacity-75">
+                      {char.role[lang]}
+                    </p>
+
+                    <p className="text-sm font-sans mt-1 leading-relaxed">
+                      {char.desc[lang]}
+                    </p>
+                  </div>
+
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* --- SECTION 3: PROJECTS --- */}
-        <section id="projects" className="space-y-8">
-          <h2 className="text-4xl font-bold border-b-4 border-[#392F43] pb-2 inline-block transform rotate-1">
-            {t.projects}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            {/* Project 1 */}
-            <div className="paper-crumpled paper-ripped border-2 border-[#392F43] drop-shadow-[7px_7px_0px_#8B9E9C] overflow-hidden group">
-              <div className="h-48 bg-[#B9BEBD] border-b-2 border-[#392F43] flex items-center justify-center relative">
-                <span className="text-[#392F43] font-bold tracking-widest">[ IMAGE SCREENSHOT ]</span>
-                <div className="absolute inset-0 bg-[#392F43]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </div>
-              <div className="p-6 space-y-4">
-                <h3 className="text-3xl font-bold">FOCUS POINT EDUCATION</h3>
-                <p className="text-lg font-sans font-semibold">{t.project1Desc}</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 border-2 border-[#392F43] bg-white/70 text-sm shadow-[2px_2px_0px_#8B9E9C]">React</span>
-                  <span className="px-3 py-1 border-2 border-[#392F43] bg-white/70 text-sm shadow-[2px_2px_0px_#8B9E9C]">Tailwind CSS</span>
-                </div>
-                <div className="pt-4 flex gap-4 font-bold border-t-2 border-[#392F43] border-dashed mt-4">
-                  <a href="#" className="hover:underline flex items-center gap-2"><span>Demo</span> →</a>
-                  <a href="#" className="hover:underline">GitHub</a>
-                </div>
-              </div>
-            </div>
-
-            {/* Project 2 */}
-            <div className="paper-crumpled paper-ripped border-2 border-[#392F43] drop-shadow-[7px_7px_0px_#8B9E9C] overflow-hidden group">
-              <div className="h-48 bg-[#8F9C9F] border-b-2 border-[#392F43] flex items-center justify-center relative">
-                <span className="text-[#392F43] font-bold tracking-widest">[ IMAGE SCREENSHOT ]</span>
-                <div className="absolute inset-0 bg-[#392F43]/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </div>
-              <div className="p-6 space-y-4">
-                <h3 className="text-3xl font-bold">IPOS Mobile App Backend</h3>
-                <p className="text-lg font-sans font-semibold">{t.project2Desc}</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 border-2 border-[#392F43] bg-white/70 text-sm shadow-[2px_2px_0px_#8B9E9C]">Node.js</span>
-                  <span className="px-3 py-1 border-2 border-[#392F43] bg-white/70 text-sm shadow-[2px_2px_0px_#8B9E9C]">Express.js</span>
-                  <span className="px-3 py-1 border-2 border-[#392F43] bg-white/70 text-sm shadow-[2px_2px_0px_#8B9E9C]">MySQL</span>
-                </div>
-                <div className="pt-4 flex gap-4 font-bold border-t-2 border-[#392F43] border-dashed mt-4">
-                  <a href="#" className="hover:underline flex items-center gap-2"><span>Demo</span> →</a>
-                  <a href="#" className="hover:underline">GitHub</a>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* --- SECTION 4: CERTIFICATES --- */}
-        <section id="certificates" className="space-y-8">
-          <h2 className="text-4xl font-bold border-b-4 border-[#392F43] pb-2 inline-block">
-            {t.certificates}
-          </h2>
-          <div className="paper-crumpled paper-ripped p-6 border-2 border-[#392F43] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 drop-shadow-[5px_5px_0px_#8B9E9C]">
-            <div>
-              <h3 className="text-2xl font-bold">Fullstack Web Development</h3>
-              <p className="text-lg italic">{t.certProvider}</p>
-            </div>
-            <div className="text-right">
-              <p className="mb-2 font-bold font-sans">{t.year}</p>
-              <a href="#" className="px-4 py-2 border-2 border-[#392F43] bg-[#392F43] text-white hover:bg-white hover:text-[#392F43] transition-colors shadow-[3px_3px_0px_#8B9E9C]">
-                {t.verifyLink}
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* --- SECTION 5: CONTACT --- */}
         <section id="contact" className="py-12 border-t-4 border-[#392F43] border-double text-center space-y-6">
           <h2 className="text-4xl font-bold">{t.collaborate}</h2>
           <p className="text-xl max-w-md mx-auto font-sans font-bold">
