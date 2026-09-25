@@ -18,7 +18,7 @@ import oliver from "../assets/students/oliver.png";
 import zip from "../assets/students/zip.png";
 import edward from "../assets/students/edward.png";
 import petunia from "../assets/students/petunia.png";
-import lizzy from "../assets/students/lizzy.png";
+import lizzy from "../assets/students/lizzzy.png";
 import kevin from "../assets/students/kevin.png";
 import cubby from "../assets/students/cubby.png";
 import robby from "../assets/students/robby.png";
