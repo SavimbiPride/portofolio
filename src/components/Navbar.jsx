@@ -15,6 +15,7 @@ const Navbar = ({ lang, setLang }) => {
   const isFuture = location.pathname === "/";
   const desktopSettingsRef = useRef(null);
   const mobileSettingsRef = useRef(null);
+  const mobileDropdownRef = useRef(null); // Ref baru untuk menu mobile
   const audioRef = useRef(null);
   const [volume, setVolume] = useState(0.5);
   const [progress, setProgress] = useState(0);
@@ -31,9 +32,11 @@ const Navbar = ({ lang, setLang }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       const clickedOutsideDesktop = desktopSettingsRef.current && !desktopSettingsRef.current.contains(event.target);
-      const clickedOutsideMobile = mobileSettingsRef.current && !mobileSettingsRef.current.contains(event.target);
+      const clickedOutsideMobileBtn = mobileSettingsRef.current && !mobileSettingsRef.current.contains(event.target);
+      const clickedOutsideMobileDropdown = mobileDropdownRef.current && !mobileDropdownRef.current.contains(event.target);
       
-      if (clickedOutsideDesktop && clickedOutsideMobile) {
+      // Tutup pengaturan hanya jika klik terjadi di luar area desktop, tombol mobile, dan isi dropdown mobile
+      if (clickedOutsideDesktop && clickedOutsideMobileBtn && clickedOutsideMobileDropdown) {
         setIsSettingsOpen(false);
       }
     };
@@ -109,8 +112,9 @@ const Navbar = ({ lang, setLang }) => {
       const clickedMusic = musicPopupRef.current?.contains(event.target);
       const clickedDesktopSettings = desktopSettingsRef.current?.contains(event.target);
       const clickedMobileSettings = mobileSettingsRef.current?.contains(event.target);
+      const clickedMobileDropdown = mobileDropdownRef.current?.contains(event.target);
 
-      if (!clickedMusic && !clickedDesktopSettings && !clickedMobileSettings) {
+      if (!clickedMusic && !clickedDesktopSettings && !clickedMobileSettings && !clickedMobileDropdown) {
         setIsMusicOpen(false);
       }
     };
@@ -225,7 +229,6 @@ const Navbar = ({ lang, setLang }) => {
       }
     : {
         // Tema FPE (Halaman 2) - Kertas & Terang
-        // Menghapus paper-crumpled di area layout krusial agar tidak miring/rusak
         navBg: "bg-[#E1E1DF] border-[#392F43] border-b-4", 
         topBar: "bg-[#392F43]",
         logo: "text-[#392F43] font-black drop-shadow-[2px_2px_0px_#8B9E9C]",
@@ -388,15 +391,33 @@ const Navbar = ({ lang, setLang }) => {
 
         {/* Mobile Settings Menu */}
         {isSettingsOpen && (
-          <div className={`md:hidden border-b animate-fade-in-down ${theme.mobileMenu}`}>
+          <div ref={mobileDropdownRef} className={`md:hidden border-b animate-fade-in-down z-50 relative ${theme.mobileMenu}`}>
             <button 
               onClick={() => {
                 setIsSettingsOpen(false);
                 changeTheme();
               }}
-              className={`w-full text-left block px-7 py-4 transition-colors cursor-pointer ${theme.dropdownItem}`}
+              className={`w-full text-left flex items-center gap-3 px-6 py-4 transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
             >
-              🎨 {isPage1 ? "FPE Style" : "Future Style"}
+              {isPage1 ? (
+                <>
+                  <img 
+                    src={fpeicon} 
+                    alt="FPE Fandom" 
+                    className="w-6 h-6 object-contain" 
+                  />
+                  <span>FPE Fandom</span>
+                </>
+              ) : (
+                <>
+                  <img 
+                    src={portfolioIcon}
+                    alt="Portfolio" 
+                    className="w-6 h-6 object-contain" 
+                  />
+                  <span>portofolio</span>
+                </>
+              )}
             </button>
             
             <button 
@@ -404,17 +425,20 @@ const Navbar = ({ lang, setLang }) => {
                 setIsMusicOpen(true);
                 setIsSettingsOpen(false);
               }}
-              className={`w-full text-left block px-7 py-4 transition-colors cursor-pointer ${theme.dropdownItem}`}
+              className={`w-full text-left block px-6 py-4 transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
             >
               🎵 {lang === 'id' ? 'Buka Musik Player' : 'Open Music Player'}
             </button>
 
             <button
               onClick={toggleLanguage}
-              className={`w-full py-5 flex items-center justify-center transition-colors cursor-pointer ${theme.dropdownItem}`}
+              className={`w-full px-6 py-5 flex items-center justify-between transition-colors cursor-pointer ${isPage1 ? "animate-rgb-text font-bold" : "font-barrio"} ${theme.dropdownItem}`}
             >
-              <span className="text-xl font-bold leading-none">
+              <span className="text-lg">
                 {lang === 'id' ? '🇬🇧 Switch to English' : '🇮🇩 Ganti ke Indonesia'}
+              </span>
+              <span className={`text-[10px] px-2 py-1 rounded font-mono font-bold uppercase ${isPage1 ? 'bg-gray-800 text-cyan-400' : 'bg-[#392F43] text-white'}`}>
+                {lang}
               </span>
             </button>
           </div>
