@@ -87,7 +87,7 @@ const dummyStudents = [
       en: "Student"
     },
     desc: {
-      id: "Suka menggunakan boneka tangan.",
+      id: "Suka menggunakan boneka tangans.",
       en: "Likes using hand puppets."
     },
     image: lana
